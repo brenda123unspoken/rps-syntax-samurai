@@ -1,22 +1,44 @@
-from flask import Blueprint, jsonify
+# from flask import Blueprint, jsonify
+# from ..models.player import Player
+
+# bp = Blueprint('players', __name__, url_prefix='/api/players')
+
+# @bp.route('/')
+# def get_players():
+#     players = Player.query.all()
+#     return jsonify([player.to_dict() for player in players])
+
+# class PlayerResource:
+#     def __init__(self, player_id, name, score):
+#         self.player_id = player_id
+#         self.name = name
+#         self.score = score
+
+#     def to_dict(self):
+#         return {
+#             "player_id": self.player_id,
+#             "name": self.name,
+#             "score": self.score
+#         }
+from flask import Blueprint, jsonify, request
 from ..models.player import Player
+from ..extensions import db, cache
 
-bp = Blueprint('players', __name__, url_prefix='/players')
+bp = Blueprint('players', __name__, url_prefix='/api/players')
 
-@bp.route('/')
+@bp.route('/', methods=['GET'])
 def get_players():
     players = Player.query.all()
     return jsonify([player.to_dict() for player in players])
 
-class PlayerResource:
-    def __init__(self, player_id, name, score):
-        self.player_id = player_id
-        self.name = name
-        self.score = score
-
-    def to_dict(self):
-        return {
-            "player_id": self.player_id,
-            "name": self.name,
-            "score": self.score
-        }
+@bp.route('/', methods=['POST'])
+def create_player():
+    data = request.get_json()
+    name = data.get('name')
+    if not name:
+        return jsonify({"error": "Name is required"}), 400
+    player = Player(name=name)
+    db.session.add(player)
+    db.session.commit()
+    cache.delete('all_players')  # Invalidate cache
+    return jsonify(player.to_dict()), 201

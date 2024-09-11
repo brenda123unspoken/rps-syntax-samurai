@@ -1,9 +1,9 @@
 from flask import Flask
-from extensions import db, cache, migrate
-from config import Config
-from resources.game_resource import bp as game_bp
-from resources.player_resource import bp as player_bp
-from resources.score_resource import bp as score_bp
+from .extensions import db, cache, migrate
+from .config import Config
+from .resources.game_resource import bp as game_bp
+from .resources.player_resource import bp as player_bp
+from .resources.score_resource import bp as score_bp
 
 def create_app():
     app = Flask(__name__)
