@@ -1,9 +1,11 @@
-# from sqlalchemy.ext.declarative import declarative_base
-
-# Base = declarative_base()
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String
 from uuid import uuid4
 from datetime import datetime
 from ..extensions import db
+
+
+Base = declarative_base()
 
 class BaseModel(db.Model):
     __abstract__ = True

@@ -26,7 +26,7 @@
 
 #     # Many-to-many relationship: A player can participate in many games
 #     played_games = db.relationship('Game', secondary=player_game_association, back_populates='players')
-from .basemodel import BaseModel
+from ..models.basemodel import BaseModel
 from ..extensions import db
 from .associations import player_game_association
 
@@ -38,7 +38,7 @@ class Player(BaseModel):
     # UUID as primary key
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(50), nullable=False)
-    score = db.Column(db.Integer, nullable=False)
+    score = db.Column(db.Integer, default=0, nullable=False)
     
     
     # Relationship to scores
