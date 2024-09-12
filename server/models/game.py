@@ -27,7 +27,6 @@
 from .basemodel import BaseModel
 from .associations import player_game_association 
 from ..extensions import db
-
 import uuid
 
 class Game(BaseModel):
@@ -39,3 +38,9 @@ class Game(BaseModel):
     
     # Many-to-many relationship with Player through association table
     players = db.relationship('Player', secondary=player_game_association, back_populates='played_games')
+   
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'result': self.result
+        }

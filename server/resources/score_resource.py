@@ -1,20 +1,28 @@
-from flask import Blueprint, jsonify
-from ..models.score import Score
+from flask import Blueprint, jsonify, request
+from ..controllers.score_controller import get_all_scores, create_score, get_score, update_score, delete_score
 
-bp = Blueprint('scores', __name__, url_prefix='/scores')
+bp = Blueprint('scores', __name__, url_prefix='/api/scores')
 
-@bp.route('/')
+@bp.route('/', methods=['GET'])
 def get_scores():
-    scores = Score.query.all()
-    return jsonify([score.to_dict() for score in scores])
+    return get_all_scores()
 
-class ScoreResource:
-    def __init__(self, player_id, score):
-        self.player_id = player_id
-        self.score = score
+@bp.route('/', methods=['POST'])
+def create_new_score():
+    data = request.get_json()
+    response, status_code = create_score(data)
+    return jsonify(response), status_code
 
-    def to_dict(self):
-        return {
-            "player_id": self.player_id,
-            "score": self.score
-        }
+@bp.route('/<uuid:score_id>', methods=['GET'])
+def get_single_score(score_id):
+    return get_score(score_id)
+
+@bp.route('/<uuid:score_id>', methods=['PATCH'])
+def update_single_score(score_id):
+    data = request.get_json()
+    response, status_code = update_score(score_id, data)
+    return jsonify(response), status_code
+@bp.route('/<uuid:score_id>', methods=['DELETE'])
+def delete_single_score(score_id):
+    response, status_code = delete_score(score_id)
+    return jsonify(response), status_code

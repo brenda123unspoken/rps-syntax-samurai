@@ -35,3 +35,13 @@ class Score(BaseModel):
     wins = db.Column(db.Integer, nullable=False)
     losses = db.Column(db.Integer, nullable=False)
     draws = db.Column(db.Integer, nullable=False)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'player_id': self.player_id,
+            'player': self.player.to_dict() if self.player else None,
+            'wins': self.wins,
+            'losses': self.losses,
+            'draws': self.draws
+        }

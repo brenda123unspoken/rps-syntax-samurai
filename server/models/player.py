@@ -46,3 +46,13 @@ class Player(BaseModel):
     
     # Many-to-many relationship: A player can participate in many games
     played_games = db.relationship('Game', secondary='player_game', back_populates='players')
+    
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "name": self.name,
+            "score": self.score, 
+            # "created_at": self.created_at.isoformat(),
+            # "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }
+        
