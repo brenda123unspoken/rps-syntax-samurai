@@ -16,6 +16,10 @@ def create_app():
     cache.init_app(app)
     migrate.init_app(app, db)
 
+   # Import models after initializing db
+    with app.app_context():
+        from .models import Player, Game, Score
+    
     # Register blueprints/resources
     app.register_blueprint(game_bp)
     app.register_blueprint(player_bp)

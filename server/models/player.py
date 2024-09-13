@@ -27,6 +27,7 @@
 #     # Many-to-many relationship: A player can participate in many games
 #     played_games = db.relationship('Game', secondary=player_game_association, back_populates='players')
 from ..models.basemodel import BaseModel
+from sqlalchemy.orm import relationship
 from ..extensions import db
 from .associations import player_game_association
 
@@ -37,22 +38,25 @@ class Player(BaseModel):
     
     # UUID as primary key
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = db.Column(db.String(50), nullable=False)
+    name = db.Column(db.String(50), unique=True,  nullable=False)
     score = db.Column(db.Integer, default=0, nullable=False)
     
     
     # Relationship to scores
     scores = db.relationship('Score', back_populates='player')
-    
+    # Games won and lost
+    games_won = db.relationship('Game', foreign_keys='Game.winner_id', back_populates='winner')
+    games_lost = db.relationship('Game', foreign_keys='Game.loser_id', back_populates='loser')
+    games = db.relationship('Game', secondary='player_game_association', back_populates='players')
     # Many-to-many relationship: A player can participate in many games
-    played_games = db.relationship('Game', secondary='player_game', back_populates='players')
+    played_games = db.relationship('Game', secondary=player_game_association, overlaps='players')
     
     def to_dict(self):
         return {
             "id": str(self.id),
             "name": self.name,
             "score": self.score, 
-            # "created_at": self.created_at.isoformat(),
-            # "updated_at": self.updated_at.isoformat() if self.updated_at else None
+            "games_won": len(self.games_won),
+            "games_lost": len(self.games_lost)
         }
         

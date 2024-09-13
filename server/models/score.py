@@ -32,8 +32,8 @@ class Score(BaseModel):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     player_id = db.Column(db.String(36), db.ForeignKey('players.id'))
     player = db.relationship('Player', back_populates='scores')
-    wins = db.Column(db.Integer, nullable=False)
-    losses = db.Column(db.Integer, nullable=False)
+    wins = db.Column(db.Integer, default=0, nullable=False)
+    losses = db.Column(db.Integer, default=0, nullable=False)
     draws = db.Column(db.Integer, nullable=False)
     
     def to_dict(self):
